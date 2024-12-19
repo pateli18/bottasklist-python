@@ -92,7 +92,10 @@ class BotTask:
     updated_at: datetime
 
     def __str__(self) -> str:
-        return f"{self.description} - **Status:** {self.status}"
+        return f"[{self.id}] {self.description} - **Status:** {self.status}"
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 class BotTaskList:
@@ -122,6 +125,12 @@ class BotTaskList:
         self.statuses = statuses
         self.default_status = default_status
         self.tasks: list[BotTask] = []
+
+    def __str__(self) -> str:
+        return "\n---------\n".join(str(task) for task in self.tasks)
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
     def _generate_id(self) -> str:
         alphabet = string.ascii_lowercase + string.digits
@@ -252,8 +261,8 @@ class BotTaskList:
             required=["descriptions"],
         )
 
-        update_tasks_statuses_tool = BotTaskListTool(
-            name="bottasklist_update_tasks_statuses",
+        update_tasks_status_tool = BotTaskListTool(
+            name="bottasklist_update_tasks_status",
             description="Update the status of the tasks",
             properties={
                 "ids": BotTaskListToolProperty(
@@ -301,7 +310,7 @@ class BotTaskList:
 
         tools = [
             add_tasks_tool,
-            update_tasks_statuses_tool,
+            update_tasks_status_tool,
             get_tasks_tool,
         ]
 
